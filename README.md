@@ -1,4 +1,4 @@
-# 2048_game-with-block-
+# 2048_game_with_block
 It simulate the famous game of 2048, with background colors and blocks.
 
 # Building
