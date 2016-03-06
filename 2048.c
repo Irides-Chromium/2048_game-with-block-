@@ -17,13 +17,7 @@ void print_border ();
 void print_status (int score);
 void print_tile (int num, int tile_num);
 void print_info (int status);
-//void print_tile_num (int *tile[16]);
 void set_canonical (struct termios old);
-
-enum {UP = 1,
-      DOWN,
-      LEFT,
-      RIGHT};
 
 //CANONICAL
 struct termios set_non_canonical () {
@@ -166,18 +160,6 @@ void print_tile (int num, int tile_num) {
      */
 }
 
-//TEST PRINT_TILE_NUM
-void print_tile_num (int *tile[16]) {
-    int i;
-    FILE *g = fopen ("log", "a");
-    fprintf (g, "%s", "Tiles: ");
-    for (i=0;i<16;i++) {
-        fprintf (g, "%d ", *tile[i]);
-    }
-    fprintf (g, "\n");
-    fclose (g);
-}
-
 //GET_KEY
 char get_key () {
     char signal;
@@ -246,11 +228,6 @@ char get_key () {
 int move_tile (int *tile[16], char direction) {
     int i, j;
     int delta_score = 0;
-    //int left_ava[12] =
-    //{0, 1, 2,
-    // 4, 5, 6,
-    // 8, 9, 10,
-    // 12, 13, 14};
 
     switch (direction) {
         case 'U':
@@ -560,7 +537,7 @@ start:
         for (i=0;i<16;i++) {
             print_tile (*tile_p[i], i);
         }
-        //print_tile_num (tile_p);
+
         print_status (score);
     }
 
