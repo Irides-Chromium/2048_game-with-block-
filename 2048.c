@@ -8,6 +8,7 @@
 
 struct termios set_non_canonical ();
 char get_key ();
+bool check_end (int *tile[16]);
 int main (int argc, char **argv);
 int move_tile (int *tile[16], char direction);
 void map_key (char key);
@@ -15,6 +16,7 @@ void place_tile (int *tile[16]);
 void print_border ();
 void print_status (int score);
 void print_tile (int num, int tile_num);
+void print_info (int status);
 //void print_tile_num (int *tile[16]);
 void set_canonical (struct termios old);
 
@@ -75,12 +77,12 @@ void print_tile (int num, int tile_num) {
         case 2:
             strcpy (color, "\e[48;2;134;222;132m");
             strcpy (before, "    ");
-            strcpy (after, "     ");           
+            strcpy (after, "     ");
             break;
         case 4:
             strcpy (color, "\e[48;2;103;204;252m");
             strcpy (before, "    ");
-            strcpy (after, "     ");   
+            strcpy (after, "     ");
             break;
         case 8:
             strcpy (color, "\e[48;2;153;51;255m");
@@ -142,7 +144,7 @@ void print_tile (int num, int tile_num) {
     p_x = (col - 1) * 11 + 1;
     if (num == 0) {
         printf ("\e[0m");
-        printf ("\e[%d;%dH          ", p_y, p_x);   
+        printf ("\e[%d;%dH          ", p_y, p_x);
         printf ("\e[%d;%dH          ", p_y+1, p_x);
         printf ("\e[%d;%dH          ", p_y+2, p_x);
         printf ("\e[%d;%dH          ", p_y+3, p_x);
@@ -150,7 +152,7 @@ void print_tile (int num, int tile_num) {
         printf ("\e[0m");
     } else {
         printf ("%s", color);
-        printf ("\e[%d;%dH          ", p_y, p_x);   
+        printf ("\e[%d;%dH          ", p_y, p_x);
         printf ("\e[%d;%dH          ", p_y+1, p_x);
         printf ("\e[%d;%dH%s%d%s", p_y+2, p_x, before, num, after);
         printf ("\e[%d;%dH          ", p_y+3, p_x);
@@ -176,7 +178,7 @@ void print_tile_num (int *tile[16]) {
     fclose (g);
 }
 
-//GET_KEY 
+//GET_KEY
 char get_key () {
     char signal;
     char key;
@@ -240,73 +242,106 @@ char get_key () {
     return key;
 }
 
-//MOVE_TILE 
+//MOVE_TILE
 int move_tile (int *tile[16], char direction) {
-    int i;
+    int i, j;
     int delta_score = 0;
-    int left_ava[12] =
-    {0, 1, 2,
-     4, 5, 6,
-     8, 9, 10,
-     12, 13, 14};
+    //int left_ava[12] =
+    //{0, 1, 2,
+    // 4, 5, 6,
+    // 8, 9, 10,
+    // 12, 13, 14};
 
     switch (direction) {
         case 'U':
-            for (i=0;i<4;i++) {
-                if (*tile[i] == 0) {
-                    *tile[i] = *tile[i+4];
-                    *tile[i+4] = 0;
-                }
-
-                if (*tile[i] == *tile[i+4]) {
-                    *tile[i] = 2 * *tile[i];
-                    *tile[i+4] = 0;
-                    delta_score += *tile[i];
+            for (j=0;j<=5;j++) {
+                if (j!=4) {
+                    for (i=0;i<12;i++) {
+                        if (*tile[i] == 0) {
+                            *tile[i] = *tile[i+4];
+                            *tile[i+4] = 0;
+                        }
+                    }
+                } else {
+                    for (i=0;i<12;i++) {
+                        if (*tile[i] == *tile[i+4]) {
+                            *tile[i] = 2 * *tile[i];
+                            *tile[i+4] = 0;
+                            delta_score += *tile[i];
+                        }
+                    }
                 }
             }
             break;
         case 'D':
-            for (i=0;i<12;i++) {
-
-                if (*tile[i+4] == 0) {
-                    *tile[i+4] = *tile[i];
-                    *tile[i] = 0;
-                }
-
-                if (*tile[i] == *tile[i+4]) {
-                    *tile[i+4] = 2 * *tile[i+4];
-                    *tile[i] = 0;
-                    delta_score += *tile[i+4];
+            for (j=0;j<=5;j++) {
+                if (j!=4) {
+                    for (i=11;i>=0;i--) {
+                        if (*tile[i+4] == 0) {
+                            *tile[i+4] = *tile[i];
+                            *tile[i] = 0;
+                        }
+                    }
+                } else {
+                    for (i=11;i>=0;i--) {
+                        if (*tile[i] == *tile[i+4]) {
+                            *tile[i+4] = 2 * *tile[i+4];
+                            *tile[i] = 0;
+                            delta_score += *tile[i+4];
+                        }
+                    }
                 }
             }
             break;
         case 'R':
-            for (i=0;i<12;i++) {
-
-                if (*tile[left_ava[i]+1] == 0) {
-                    *tile[left_ava[i]+1] = *tile[left_ava[i]];
-                    *tile[left_ava[i]] = 0;
-                }
-
-                if (*tile[left_ava[i]] == *tile[left_ava[i]+1]) {
-                    *tile[left_ava[i]+1] = 2 * *tile[left_ava[i]+1];
-                    *tile[left_ava[i]] = 0;
-                    delta_score += *tile[left_ava[i]+1];
+            for (j=0;j<=5;j++) {
+                if (j!=4) {
+                    for (i=14;i>=0;i--) {
+                        if (i == 3 || i == 7 || i == 11) {
+                            continue;
+                        }
+                        if (*tile[i+1] == 0) {
+                            *tile[i+1] = *tile[i];
+                            *tile[i] = 0;
+                        }
+                    }
+                } else {
+                    for (i=14;i>=0;i--) {
+                        if (i == 3 || i == 7 || i == 11) {
+                            continue;
+                        }
+                        if (*tile[i] == *tile[i+1]) {
+                            *tile[i+1] = 2 * *tile[i+1];
+                            *tile[i] = 0;
+                            delta_score += *tile[i+1];
+                        }
+                    }
                 }
             }
             break;
         case 'L':
-            for (i=0;i<12;i++) {
-
-                if (*tile[left_ava[i]] == 0) {
-                    *tile[left_ava[i]] = *tile[left_ava[i]+1];
-                    *tile[left_ava[i]+1] = 0;
-                }
-
-                if (*tile[left_ava[i]] == *tile[left_ava[i]+1]) {
-                    *tile[left_ava[i]] = 2 * *tile[left_ava[i]];
-                    *tile[left_ava[i]+1] = 0;
-                    delta_score += *tile[left_ava[i]];
+            for (j=0;j<=5;j++) {
+                if (j!=4) {
+                    for (i=0;i<=14;i++) {
+                        if (i == 3 || i == 7 || i == 11) {
+                            continue;
+                        }
+                        if (*tile[i] == 0) {
+                            *tile[i] = *tile[i+1];
+                            *tile[i+1] = 0;
+                        }
+                    }
+                } else {
+                    for (i=0;i<=14;i++) {
+                        if (i == 3 || i == 7 || i == 11) {
+                            continue;
+                        }
+                        if (*tile[i] == *tile[i+1]) {
+                            *tile[i] = 2 * *tile[i];
+                            *tile[i+1] = 0;
+                            delta_score += *tile[i];
+                        }
+                    }
                 }
             }
             break;
@@ -322,7 +357,7 @@ void place_tile (int *tile[16]) {
     int tile_num;
     int empty_tile[16];
     int empty_num=0;
-    
+
     srandom (time (NULL));
     for (i=0;i<16;i++) {
         if (0 == *tile[i]) {
@@ -332,10 +367,10 @@ void place_tile (int *tile[16]) {
     }
 
     if (empty_num > 0) {
-        tile_num = random () % 8 ? 2 : 4;
+        tile_num = random () % 10 ? 2 : 4;
         empty_loc = random () % (empty_num);
         tile_loc = empty_tile[empty_loc];
-        print_tile (tile_num, tile_loc);
+        //print_tile (tile_num, tile_loc);
         *tile[tile_loc] = tile_num;
     }
 }
@@ -348,18 +383,106 @@ void print_status (int score) {
     printf ("\e[24;80H\e[0m");
 }
 
+//INFO
+void print_info (int status) {
+    switch (status) {
+        case 0: //normal
+            printf ("\e[3;49H%s", "Use your arrow key to play");
+            printf ("\e[5;58H%s", "_____");
+            printf ("\e[6;57H%s", "|     |");
+            printf ("\e[7;57H%s", "|  ^  |");
+            printf ("\e[8;57H%s", "|  |  |");
+            printf ("\e[9;51H%s", "-------------------");
+            printf ("\e[10;51H%s", "|     |     |     |");
+            printf ("\e[11;51H%s", "|  <- |  |  | ->  |");
+            printf ("\e[12;51H%s", "|     |  v  |     |");
+            printf ("\e[13;51H%s", "-------------------");
+            printf ("\e[14;50H%s", "Or W, S, A, D instead");
+            break;
+        case 1: //win
+            printf ("\e[3;49H%s", "                           ");
+            printf ("\e[5;58H%s", "                           ");
+            printf ("\e[6;57H%s", "                           ");
+            printf ("\e[7;57H%s", "                           ");
+            printf ("\e[8;57H%s", "                           ");
+            printf ("\e[9;51H%s", "                           ");
+            printf ("\e[10;51H%s", "                          ");
+            printf ("\e[11;51H%s", "                          ");
+            printf ("\e[12;51H%s", "                          ");
+            printf ("\e[13;51H%s", "    \e[1;35mHurray!!!\e[0m           ");
+            printf ("\e[14;51H%s", "\e[34mYou reached 2048!!\e[0m");
+            printf ("\e[15;51H%s", "Move to continue");
+            break;
+        case 2: //lose
+            printf ("\e[3;49H%s", "                           ");
+            printf ("\e[5;58H%s", "                           ");
+            printf ("\e[6;57H%s", "                           ");
+            printf ("\e[7;57H%s", "                           ");
+            printf ("\e[8;57H%s", "                           ");
+            printf ("\e[9;51H%s", "                           ");
+            printf ("\e[10;51H%s", "                          ");
+            printf ("\e[11;51H%s", "                          ");
+            printf ("\e[12;51H%s", "                          ");
+            printf ("\e[13;51H%s", "    \e[1;31mOh no!!\e[0m             ");
+            printf ("\e[14;55H%s", "You lose!!!");
+            break;
+        default:
+            break;
+    }
+    printf ("\e[20;49H%s", "Press 'r' to retry");
+    printf ("\e[21;49H%s", "      'q' to quit");
+}
+
+//OVER
+bool check_end (int *tile[16]) {
+    int i;
+    int tile_bak[16];
+    bool changed = false;
+    for (i=0;i<16;i++) {
+        if (*tile[i] == 0) {
+            return false;
+        }
+    }
+
+    for (i=0;i<16;i++) {
+        tile_bak[i] = *tile[i];
+    }
+
+    move_tile (tile, 'U');
+    move_tile (tile, 'D');
+    move_tile (tile, 'R');
+    move_tile (tile, 'L');
+    for (i=0;i<16;i++) {
+        if (tile_bak[i] != *tile[i]) {
+            changed = true;
+        }
+    }
+
+    if (changed) {
+        for (i=0;i<16;i++) {
+            *tile[i] = tile_bak[i];
+        }
+        return false;
+    }
+    return true;
+}
+
 int main (int argc, char **argv) {
     char key;
+    bool changed = false;
+    bool reached = false;
     int i;
     int turn;
     int score = 0;
     int tile[16];// = {0, 2, 4, 0, 0, 8, 0, 16, 0, 128, 0, 512, 0, 1024, 0, 4096};
+    int tile_bak[16];
     int *tile_p[16];
 
     printf ("\e[s");          //store cursor position
     printf ("\e[?1049h");       //store window in buffer
     printf ("\e[2J");           //clear screen
     print_border ();
+    print_info (0);
     print_status (score);
     struct termios saved_state = set_non_canonical ();
 start:
@@ -375,12 +498,35 @@ start:
     place_tile (tile_p);
     place_tile (tile_p);
 
-    //for (i=0;i<16;i++) {
-    //    print_tile (*tile_p[i], i);
-    //}
-    
+    for (i=0;i<16;i++) {
+        print_tile (*tile_p[i], i);
+    }
+
     //main loop
     for (turn=1;;turn++) {
+
+        //backup
+        for (i=0;i<16;i++) {
+            tile_bak[i] = tile[i];
+        }
+
+        //check end
+        if (check_end (tile_p)) {
+            goto lose;
+        }
+
+        //check 2048
+        if (!reached) {
+            for (i=0;i<16;i++) {
+                if (tile[i] == 2048) {
+                    print_info (1);
+                    reached = true;
+                }
+            }
+        } else {
+            print_info (0);
+        }
+
         //Get key
         key = get_key ();
         switch (key) {
@@ -399,12 +545,36 @@ start:
             default:
                 break;
         }
-        place_tile (tile_p);
+
+        changed = false;
+        for (i=0;i<16;i++) {
+            if (tile[i] != tile_bak[i]) {
+                changed = true;
+            }
+        }
+
+        if (changed) {
+            place_tile (tile_p);
+        }
+
         for (i=0;i<16;i++) {
             print_tile (*tile_p[i], i);
         }
-        print_tile_num (tile_p);
+        //print_tile_num (tile_p);
         print_status (score);
+    }
+
+lose:
+    print_info (2);
+    while (true) {
+        switch (get_key ()) {
+            case 'q':
+                goto end;
+            case 'r':
+                goto start;
+            default:
+                continue;
+        }
     }
 
 end:
