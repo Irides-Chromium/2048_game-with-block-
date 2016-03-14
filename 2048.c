@@ -66,8 +66,6 @@ void print_tile (int num, int tile_num) {
     int row, col;
     int p_y, p_x;
     switch (num) {
-        //case 0:
-        //    strcpy (color, "\e[0m");
         case 2:
             strcpy (color, "\e[48;2;134;222;132m");
             strcpy (before, "    ");
@@ -132,7 +130,7 @@ void print_tile (int num, int tile_num) {
             break;
     }
 
-    row = (int) (tile_num/4+1);       //there was a floor ()
+    row = (int) (tile_num/4+1);
     col = tile_num % 4 + 1;
     p_y = (row - 1) * 6 + 1;
     p_x = (col - 1) * 11 + 1;
@@ -153,11 +151,6 @@ void print_tile (int num, int tile_num) {
         printf ("\e[%d;%dH          ", p_y+4, p_x);
         printf ("\e[0m");
     }
-    /*  0   1   2   3
-     *  4   5   6   7
-     *  8   9   10  11
-     *  12  13  14  15
-     */
 }
 
 //GET_KEY
@@ -347,7 +340,6 @@ void place_tile (int *tile[16]) {
         tile_num = random () % 10 ? 2 : 4;
         empty_loc = random () % (empty_num);
         tile_loc = empty_tile[empty_loc];
-        //print_tile (tile_num, tile_loc);
         *tile[tile_loc] = tile_num;
     }
 }
@@ -378,16 +370,16 @@ void print_info (int status) {
             break;
         case 1: //win
             printf ("\e[3;49H%s", "                           ");
-            printf ("\e[5;58H%s", "                           ");
-            printf ("\e[6;57H%s", "                           ");
-            printf ("\e[7;57H%s", "                           ");
-            printf ("\e[8;57H%s", "                           ");
+            printf ("\e[5;57H%s", "                        ");
+            printf ("\e[6;57H%s", "                        ");
+            printf ("\e[7;57H%s", "                        ");
+            printf ("\e[8;57H%s", "                        ");
             printf ("\e[9;51H%s", "                           ");
             printf ("\e[10;51H%s", "                          ");
             printf ("\e[11;51H%s", "                          ");
             printf ("\e[12;51H%s", "                          ");
             printf ("\e[13;51H%s", "    \e[1;35mHurray!!!\e[0m           ");
-            printf ("\e[14;51H%s", "\e[34mYou reached 2048!!\e[0m");
+            printf ("\e[14;50H%s", " \e[34mYou reached 2048!!\e[0m");
             printf ("\e[15;51H%s", "Move to continue");
             break;
         case 2: //lose
@@ -401,7 +393,7 @@ void print_info (int status) {
             printf ("\e[11;51H%s", "                          ");
             printf ("\e[12;51H%s", "                          ");
             printf ("\e[13;51H%s", "    \e[1;31mOh no!!\e[0m             ");
-            printf ("\e[14;55H%s", "You lose!!!");
+            printf ("\e[14;50H%s", "     You lose!!!            ");
             break;
         default:
             break;
@@ -451,16 +443,14 @@ int main (int argc, char **argv) {
     int i;
     int turn;
     int score = 0;
-    int tile[16];// = {0, 2, 4, 0, 0, 8, 0, 16, 0, 128, 0, 512, 0, 1024, 0, 4096};
+    int tile[16];
     int tile_bak[16];
     int *tile_p[16];
 
-    printf ("\e[s");          //store cursor position
+    printf ("\e[s");            //store cursor position
     printf ("\e[?1049h");       //store window in buffer
     printf ("\e[2J");           //clear screen
     print_border ();
-    print_info (0);
-    print_status (score);
     struct termios saved_state = set_non_canonical ();
 start:
     //tile initialization
@@ -479,6 +469,9 @@ start:
         print_tile (*tile_p[i], i);
     }
 
+    score = 0;
+    print_info (0);
+    print_status (score);
     //main loop
     for (turn=1;;turn++) {
 
@@ -557,7 +550,7 @@ lose:
 end:
     //exit
     set_canonical (saved_state);//reset terminal
-    printf ("\e[u\n");      //restore cursor position
+    printf ("\e[u\n");          //restore cursor position
     printf ("\e[?1049l");       //restore the terminal window
     return 0;
 }
