@@ -62,62 +62,50 @@ void print_tile (int num, int tile_num) {
 
     switch (num) {
         case 2:
-
             strcpy (before, "    ");
             strcpy (after, "     ");
             break;
         case 4:
-
             strcpy (before, "    ");
             strcpy (after, "     ");
             break;
         case 8:
-
             strcpy (before, "    ");
             strcpy (after, "     ");
             break;
         case 16:
-
             strcpy (before, "    ");
             strcpy (after, "    ");
             break;
         case 32:
-
             strcpy (before, "    ");
             strcpy (after, "    ");
             break;
         case 64:
-
             strcpy (before, "    ");
             strcpy (after, "    ");
             break;
         case 128:
-
             strcpy (before, "   ");
             strcpy (after, "    ");
             break;
         case 256:
-
             strcpy (before, "   ");
             strcpy (after, "    ");
             break;
         case 512:
-
             strcpy (before, "   ");
             strcpy (after, "    ");
             break;
         case 1024:
-
             strcpy (before, "   ");
             strcpy (after, "   ");
             break;
         case 2048:
-
             strcpy (before, "   ");
             strcpy (after, "   ");
             break;
         case 4096:
-
             strcpy (before, "   ");
             strcpy (after, "   ");
             break;
@@ -139,6 +127,7 @@ void print_tile (int num, int tile_num) {
     p_x = col * 11;
     use_default_colors ();
     assume_default_colors (-1, -1);
+
     init_pair (1, -1, -1);
     init_pair (2, -1, 1);
     init_pair (3, -1, 2);
@@ -152,6 +141,7 @@ void print_tile (int num, int tile_num) {
     init_pair (11, -1, 10);
     init_pair (12, -1, 11);
     init_pair (13, -1, 12);
+
     if (num == 0) {
         attron (COLOR_PAIR(1));
         mvprintw (p_y, p_x, "          ");
@@ -402,8 +392,8 @@ void print_info (int status) {
             mvprintw (10, 51, "%s", "                          ");
             mvprintw (11, 51, "%s", "                          ");
             mvprintw (12, 51, "%s", "                          ");
-            mvprintw (13, 51, "%s", "    \e[1;35mHurray!!!\e[0m           ");
-            mvprintw (14, 50, "%s", " \e[34mYou reached 2048!!\e[0m");
+            mvprintw (13, 51, "%s", "    Hurray!!!           ");
+            mvprintw (14, 50, "%s", " You reached 2048!!");
             mvprintw (15, 51, "%s", "Move to continue");
             break; 
         case 2: //lose
@@ -416,7 +406,7 @@ void print_info (int status) {
             mvprintw (10, 51, "%s", "                          ");
             mvprintw (11, 51, "%s", "                          ");
             mvprintw (12, 51, "%s", "                          ");
-            mvprintw (13, 51, "%s", "    \e[1;31mOh no!!\e[0m             ");
+            mvprintw (13, 51, "%s", "    Oh no!!             ");
             mvprintw (14, 50, "%s", "     You lose!!!            ");
             break;
         default:
