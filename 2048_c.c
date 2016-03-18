@@ -5,15 +5,15 @@
 #include <time.h>
 
 char get_key ();
-bool check_end (int *tile[16]);
-int main (int argc, char **argv);
-int move_tile (int *tile[16], char direction);
-void map_key (char key);
-void place_tile (int *tile[16]);
+bool check_end (int **);
+int main (int, char **);
+int move_tile (int **, char);
+void map_key (char);
+void place_tile (int **);
 void print_border ();
-void print_status (int score);
-void print_tile (int num, int tile_num);
-void print_info (int status);
+void print_status (int);
+void print_tile (int, int);
+void print_info (int);
 
 //BORDER
 void print_border () {
