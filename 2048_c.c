@@ -5,11 +5,11 @@
 #include <time.h>
 
 char get_key ();
-bool check_end (int **);
+bool check_end (int *);
 int main (int, char **);
-int move_tile (int **, char);
+int move_tile (int *, char);
 void map_key (char);
-void place_tile (int **);
+void place_tile (int *);
 void print_border ();
 void print_status (int);
 void print_tile (int, int);
@@ -17,7 +17,7 @@ void print_info (int);
 
 //BORDER
 void print_border () {
-    int i, j;
+    int r, c;
     char horizontal[44] = "-------------------------------------------";
     //Print horizontally
     mvprintw (5, 0, horizontal);
@@ -25,15 +25,15 @@ void print_border () {
     mvprintw (17, 0, horizontal);
 
     //Print vertically
-    for (j=1;j<4;j++) {
-        for (i=1;i<24;i++) {
-            mvprintw (i-1, 11*j-1, "|");
+    for (c=1;c<5;c++) {
+        for (r=1;r<24;r++) {
+            mvprintw (r-1, 11*c-1, "|");
         }
     }
     //Print dot
-    for (j=1;j<4;j++) {
-        for (i=1;i<4;i++) {
-            mvprintw (i*6-1, 11*j-1, "+");
+    for (c=1;c<5;c++) {
+        for (r=1;r<4;r++) {
+            mvprintw (r*6-1, 11*c-1, "+");
         }
     }
     refresh ();
@@ -179,16 +179,16 @@ char get_key () {
 
     if (escape) {
         switch (signal) {
-            case 0x41:
+            case 'A':
                 key = 'U';
                 break;
-            case 0x42:
+            case 'B':
                 key = 'D';
                 break;
-            case 0x43:
+            case 'C':
                 key = 'R';
                 break;
-            case 0x44:
+            case 'D':
                 key = 'L';
                 break;
             default:
@@ -197,37 +197,22 @@ char get_key () {
         }
     } else {
         switch (signal) {
-            case 0x77: case 0x57:
-                key = 'U';
-                break;
-            case 0x73: case 0x53:
-                key = 'D';
-                break;
-            case 0x64: case 0x44:
-                key = 'R';
-                break;
-            case 0x61: case 0x41:
-                key = 'L';
-                break;
-            case 0x72: case 0x52:
-                key = 'r';
-                break;
-            case 0x71: case 0x51:
-                key = 'q';
-                break;
-            case 0x69: case 0x49: case 0x68: case 0x48:
-                key = 'h';
-                break;
-            default:
-                key = 'x';
-                break;
+            case 'w': case 'W': key = 'U'; break;
+            case 's': case 'S': key = 'D'; break;
+            case 'd': case 'D': key = 'R'; break;
+            case 'a': case 'A': key = 'L'; break;
+            case 'r': case 'R': key = 'r'; break;
+            case 'q': case 'Q': key = 'q'; break;
+            case 'i': case 'I':
+            case 'h': case 'H': key = 'h'; break;
+            default:            key = 'x'; break;
         }
     }
     return key;
 }
 
 //MOVE_TILE
-int move_tile (int *tile[16], char direction) {
+int move_tile (int tile[16], char direction) {
     int i, j;
     int delta_score = 0;
 
@@ -236,17 +221,17 @@ int move_tile (int *tile[16], char direction) {
             for (j=0;j<=5;j++) {
                 if (j!=4) {
                     for (i=0;i<12;i++) {
-                        if (*tile[i] == 0) {
-                            *tile[i] = *tile[i+4];
-                            *tile[i+4] = 0;
+                        if (tile[i] == 0) {
+                            tile[i] = tile[i+4];
+                            tile[i+4] = 0;
                         }
                     }
                 } else {
                     for (i=0;i<12;i++) {
-                        if (*tile[i] == *tile[i+4]) {
-                            *tile[i] = 2 * *tile[i];
-                            *tile[i+4] = 0;
-                            delta_score += *tile[i];
+                        if (tile[i] == tile[i+4]) {
+                            tile[i] = 2 * tile[i];
+                            tile[i+4] = 0;
+                            delta_score += tile[i];
                         }
                     }
                 }
@@ -256,17 +241,17 @@ int move_tile (int *tile[16], char direction) {
             for (j=0;j<=5;j++) {
                 if (j!=4) {
                     for (i=11;i>=0;i--) {
-                        if (*tile[i+4] == 0) {
-                            *tile[i+4] = *tile[i];
-                            *tile[i] = 0;
+                        if (tile[i+4] == 0) {
+                            tile[i+4] = tile[i];
+                            tile[i] = 0;
                         }
                     }
                 } else {
                     for (i=11;i>=0;i--) {
-                        if (*tile[i] == *tile[i+4]) {
-                            *tile[i+4] = 2 * *tile[i+4];
-                            *tile[i] = 0;
-                            delta_score += *tile[i+4];
+                        if (tile[i] == tile[i+4]) {
+                            tile[i+4] = 2 * tile[i+4];
+                            tile[i] = 0;
+                            delta_score += tile[i+4];
                         }
                     }
                 }
@@ -279,9 +264,9 @@ int move_tile (int *tile[16], char direction) {
                         if (i == 3 || i == 7 || i == 11) {
                             continue;
                         }
-                        if (*tile[i+1] == 0) {
-                            *tile[i+1] = *tile[i];
-                            *tile[i] = 0;
+                        if (tile[i+1] == 0) {
+                            tile[i+1] = tile[i];
+                            tile[i] = 0;
                         }
                     }
                 } else {
@@ -289,10 +274,10 @@ int move_tile (int *tile[16], char direction) {
                         if (i == 3 || i == 7 || i == 11) {
                             continue;
                         }
-                        if (*tile[i] == *tile[i+1]) {
-                            *tile[i+1] = 2 * *tile[i+1];
-                            *tile[i] = 0;
-                            delta_score += *tile[i+1];
+                        if (tile[i] == tile[i+1]) {
+                            tile[i+1] = 2 * tile[i+1];
+                            tile[i] = 0;
+                            delta_score += tile[i+1];
                         }
                     }
                 }
@@ -305,9 +290,9 @@ int move_tile (int *tile[16], char direction) {
                         if (i == 3 || i == 7 || i == 11) {
                             continue;
                         }
-                        if (*tile[i] == 0) {
-                            *tile[i] = *tile[i+1];
-                            *tile[i+1] = 0;
+                        if (tile[i] == 0) {
+                            tile[i] = tile[i+1];
+                            tile[i+1] = 0;
                         }
                     }
                 } else {
@@ -315,10 +300,10 @@ int move_tile (int *tile[16], char direction) {
                         if (i == 3 || i == 7 || i == 11) {
                             continue;
                         }
-                        if (*tile[i] == *tile[i+1]) {
-                            *tile[i] = 2 * *tile[i];
-                            *tile[i+1] = 0;
-                            delta_score += *tile[i];
+                        if (tile[i] == tile[i+1]) {
+                            tile[i] = 2 * tile[i];
+                            tile[i+1] = 0;
+                            delta_score += tile[i];
                         }
                     }
                 }
@@ -329,7 +314,7 @@ int move_tile (int *tile[16], char direction) {
 }
 
 //PLACE_TILE
-void place_tile (int *tile[16]) {
+void place_tile (int tile[16]) {
     int i;
     int empty_loc;
     int tile_loc;
@@ -339,7 +324,7 @@ void place_tile (int *tile[16]) {
 
     srandom (time (NULL));
     for (i=0;i<16;i++) {
-        if (0 == *tile[i]) {
+        if (0 == tile[i]) {
             empty_tile[empty_num] = i;
             ++empty_num;
         }
@@ -349,7 +334,7 @@ void place_tile (int *tile[16]) {
         tile_num = random () % 10 ? 2 : 4;
         empty_loc = random () % (empty_num);
         tile_loc = empty_tile[empty_loc];
-        *tile[tile_loc] = tile_num;
+        tile[tile_loc] = tile_num;
     }
 }
 
@@ -370,66 +355,69 @@ void print_status (int score) {
 void print_info (int status) {
     switch (status) {
         case 0: //normal
-            mvprintw (3, 49, "%s", "Use your arrow key to play");
-            mvprintw (5, 58, "%s", "_____");
-            mvprintw (6, 57, "%s", "|     |");
-            mvprintw (7, 57, "%s", "|  ^  |");
-            mvprintw (8, 57, "%s", "|  |  |");
-            mvprintw (9, 51, "%s", "-------------------");
-            mvprintw (10, 51, "%s", "|     |     |     |");
-            mvprintw (11, 51, "%s", "|  <- |  |  | ->  |");
-            mvprintw (12, 51, "%s", "|     |  v  |     |");
-            mvprintw (13, 51, "%s", "-------------------");
-            mvprintw (14, 50, "%s", "Or W, S, A, D instead");
+            mvprintw (3, 49, "%s", "Use your arrow key to play      ");
+            mvprintw (4, 49, "%s", "                                ");
+            mvprintw (5, 49, "%s", "         _____                  ");
+            mvprintw (6, 49, "%s", "        |     |                 ");
+            mvprintw (7, 49, "%s", "        |  ^  |                 ");
+            mvprintw (8, 49, "%s", "        |  |  |                 ");
+            mvprintw (9, 49, "%s", "  -------------------           ");
+            mvprintw(10, 49, "%s", "  |     |     |     |           ");
+            mvprintw(11, 49, "%s", "  |  <- |  |  | ->  |           ");
+            mvprintw(12, 49, "%s", "  |     |  v  |     |           ");
+            mvprintw(13, 49, "%s", "  -------------------           ");
+            mvprintw(14, 49, "%s", "  Or W, S, A, D instead         ");
             break; 
         case 1: //win
-            mvprintw (3, 49, "%s", "                           ");
-            mvprintw (5, 57, "%s", "                        ");
-            mvprintw (6, 57, "%s", "                        ");
-            mvprintw (7, 57, "%s", "                        ");
-            mvprintw (8, 57, "%s", "                        ");
-            mvprintw (9, 51, "%s", "                           ");
-            mvprintw (10, 51, "%s", "                          ");
-            mvprintw (11, 51, "%s", "                          ");
-            mvprintw (12, 51, "%s", "                          ");
-            mvprintw (13, 51, "%s", "    Hurray!!!           ");
-            mvprintw (14, 50, "%s", " You reached 2048!!");
-            mvprintw (15, 51, "%s", "Move to continue");
-            break; 
-        case 2: //lose
-            mvprintw (3, 49, "%s", "                           ");
-            mvprintw (5, 58, "%s", "                           ");
-            mvprintw (6, 57, "%s", "                           ");
-            mvprintw (7, 57, "%s", "                           ");
-            mvprintw (8, 57, "%s", "                           ");
-            mvprintw (9, 51, "%s", "                           ");
-            mvprintw (10, 51, "%s", "                          ");
-            mvprintw (11, 51, "%s", "                          ");
-            mvprintw (12, 51, "%s", "                          ");
-            mvprintw (13, 51, "%s", "    Oh no!!             ");
-            mvprintw (14, 50, "%s", "     You lose!!!            ");
-            break;
-        default:
+            mvprintw (3, 49, "%s", "                                ");
+            mvprintw (4, 49, "%s", "                                ");
+            mvprintw (5, 49, "%s", "                                ");
+            mvprintw (6, 49, "%s", "                                ");
+            mvprintw (7, 49, "%s", "                                ");
+            mvprintw (8, 49, "%s", "                                ");
+            mvprintw (9, 49, "%s", "                                ");
+            mvprintw(10, 49, "%s", "                                ");
+            mvprintw(11, 49, "%s", "                                ");
+            mvprintw(12, 49, "%s", "                                ");
+            mvprintw(13, 49, "%s", "           HURRAY!!!            ");
+            mvprintw(14, 49, "%s", "      You reached 2048!!        ");
+            mvprintw(15, 49, "%s", "       Move to continue         ");
+            break;                                                  
+        case 2: //lose              
+            mvprintw (3, 49, "%s", "                                ");
+            mvprintw (4, 49, "%s", "                                ");
+            mvprintw (5, 49, "%s", "                                ");
+            mvprintw (6, 49, "%s", "                                ");
+            mvprintw (7, 49, "%s", "                                ");
+            mvprintw (8, 49, "%s", "                                ");
+            mvprintw (9, 49, "%s", "                                ");
+            mvprintw(10, 49, "%s", "                                ");
+            mvprintw(11, 49, "%s", "                                ");
+            mvprintw(12, 49, "%s", "                                ");
+            mvprintw(13, 49, "%s", "            OH NO!!             ");
+            mvprintw(14, 49, "%s", "          You lose!!!           ");
+            break;                                                  
+        default:                    
             break;
     }
-    mvprintw (20, 49, "%s", "Press 'r' to retry");
-    mvprintw (21, 49, "%s", "      'q' to quit");
+    mvprintw (20, 49, "%s", "    Press 'r' to retry");
+    mvprintw (21, 49, "%s", "          'q' to quit");
     refresh ();
 }
 
 //OVER
-bool check_end (int *tile[16]) {
+bool check_end (int tile[16]) {
     int i;
     int tile_bak[16];
     bool changed = false;
     for (i=0;i<16;i++) {
-        if (*tile[i] == 0) {
+        if (tile[i] == 0) {
             return false;
         }
     }
 
     for (i=0;i<16;i++) {
-        tile_bak[i] = *tile[i];
+        tile_bak[i] = tile[i];
     }
 
     move_tile (tile, 'U');
@@ -437,14 +425,14 @@ bool check_end (int *tile[16]) {
     move_tile (tile, 'R');
     move_tile (tile, 'L');
     for (i=0;i<16;i++) {
-        if (tile_bak[i] != *tile[i]) {
+        if (tile_bak[i] != tile[i]) {
             changed = true;
         }
     }
 
     if (changed) {
         for (i=0;i<16;i++) {
-            *tile[i] = tile_bak[i];
+            tile[i] = tile_bak[i];
         }
         return false;
     }
@@ -467,7 +455,6 @@ int main (int argc, char **argv) {
     int score = 0;
     int tile[16];
     int tile_bak[16];
-    int *tile_p[16];
 
     init_scr ();
     print_border ();
@@ -477,15 +464,11 @@ start:
         tile[i] = 0;
     }
 
-    for (i=0;i<16;i++) {
-        tile_p[i] = &tile[i];
-    }
-
-    place_tile (tile_p);
-    place_tile (tile_p);
+    place_tile (tile);
+    place_tile (tile);
 
     for (i=0;i<16;i++) {
-        print_tile (*tile_p[i], i);
+        print_tile (tile[i], i);
     }
 
     score = 0;
@@ -500,7 +483,7 @@ start:
         }
 
         //check end
-        if (check_end (tile_p)) {
+        if (check_end (tile)) {
             goto lose;
         }
 
@@ -520,7 +503,7 @@ start:
         key = get_key ();
         switch (key) {
             case 'U': case 'D': case 'R': case 'L':
-                score += move_tile (tile_p, key);
+                score += move_tile (tile, key);
                 break;
             case 'q':
                 goto end;
@@ -543,11 +526,11 @@ start:
         }
 
         if (changed) {
-            place_tile (tile_p);
+            place_tile (tile);
         }
 
         for (i=0;i<16;i++) {
-            print_tile (*tile_p[i], i);
+            print_tile (tile[i], i);
         }
 
         print_status (score);

@@ -332,50 +332,57 @@ void print_status (int score) {
 void print_info (int status) {
     switch (status) {
         case 0: //normal
-            printf ("\e[3;49H%s", "Use your arrow key to play");
-            printf ("\e[5;58H%s", "_____");
-            printf ("\e[6;57H%s", "|     |");
-            printf ("\e[7;57H%s", "|  ^  |");
-            printf ("\e[8;57H%s", "|  |  |");
-            printf ("\e[9;51H%s", "-------------------");
-            printf ("\e[10;51H%s", "|     |     |     |");
-            printf ("\e[11;51H%s", "|  <- |  |  | ->  |");
-            printf ("\e[12;51H%s", "|     |  v  |     |");
-            printf ("\e[13;51H%s", "-------------------");
-            printf ("\e[14;50H%s", "Or W, S, A, D instead");
+            printf ("\e[3;49H%s", "Use your arrow key to play      ");
+            printf ("\e[4;49H%s", "                                ");
+            printf ("\e[5;49H%s", "         _____                  ");
+            printf ("\e[6;49H%s", "        |     |                 ");
+            printf ("\e[7;49H%s", "        |  ^  |                 ");
+            printf ("\e[8;49H%s", "        |  |  |                 ");
+            printf ("\e[9;49H%s", "  -------------------           ");
+            printf("\e[10;49H%s", "  |     |     |     |           ");
+            printf("\e[11;49H%s", "  |  <- |  |  | ->  |           ");
+            printf("\e[12;49H%s", "  |     |  v  |     |           ");
+            printf("\e[13;49H%s", "  -------------------           ");
+            printf("\e[14;49H%s", "  Or W, S, A, D instead         ");
             break;
         case 1: //win
-            printf ("\e[3;49H%s", "                           ");
-            printf ("\e[5;57H%s", "                        ");
-            printf ("\e[6;57H%s", "                        ");
-            printf ("\e[7;57H%s", "                        ");
-            printf ("\e[8;57H%s", "                        ");
-            printf ("\e[9;51H%s", "                           ");
-            printf ("\e[10;51H%s", "                          ");
-            printf ("\e[11;51H%s", "                          ");
-            printf ("\e[12;51H%s", "                          ");
-            printf ("\e[13;51H%s", "    \e[1;35mHurray!!!\e[0m           ");
-            printf ("\e[14;50H%s", " \e[34mYou reached 2048!!\e[0m");
-            printf ("\e[15;51H%s", "Move to continue");
+            printf ("\e[3;49H%s", "                                ");
+            printf ("\e[4;49H%s", "                                ");
+            printf ("\e[5;49H%s", "                                ");
+            printf ("\e[6;49H%s", "                                ");
+            printf ("\e[7;49H%s", "                                ");
+            printf ("\e[8;49H%s", "                                ");
+            printf ("\e[9;49H%s", "                                ");
+            printf("\e[10;49H%s", "                                ");
+            printf("\e[11;49H%s", "                                ");
+            printf("\e[34m");
+            printf("\e[12;49H%s", "           HURRAY!!!            ");
+            printf("\e[1;35m");
+            printf("\e[13;49H%s", "      You reached 2048!!        ");
+            printf("\e[0m");
+            printf("\e[14;51H%s", "       Move to continue         ");
             break;
         case 2: //lose
-            printf ("\e[3;49H%s", "                           ");
-            printf ("\e[5;58H%s", "                           ");
-            printf ("\e[6;57H%s", "                           ");
-            printf ("\e[7;57H%s", "                           ");
-            printf ("\e[8;57H%s", "                           ");
-            printf ("\e[9;51H%s", "                           ");
-            printf ("\e[10;51H%s", "                          ");
-            printf ("\e[11;51H%s", "                          ");
-            printf ("\e[12;51H%s", "                          ");
-            printf ("\e[13;51H%s", "    \e[1;31mOh no!!\e[0m             ");
-            printf ("\e[14;50H%s", "     You lose!!!            ");
+            printf ("\e[3;49H%s", "                                ");
+            printf ("\e[4;49H%s", "                                ");
+            printf ("\e[5;49H%s", "                                ");
+            printf ("\e[6;49H%s", "                                ");
+            printf ("\e[7;49H%s", "                                ");
+            printf ("\e[8;49H%s", "                                ");
+            printf ("\e[9;49H%s", "                                ");
+            printf("\e[10;49H%s", "                                ");
+            printf("\e[11;49H%s", "                                ");
+            printf("\e[12;49H%s", "                                ");
+            printf("\e[1;31m");
+            printf("\e[13;49H%s", "            OH NO!!             ");
+            printf("\e[0m");
+            printf("\e[14;49H%s", "          You lose!!!           ");
             break;
         default:
             break;
     }
-    printf ("\e[20;49H%s", "Press 'r' to retry");
-    printf ("\e[21;49H%s", "      'q' to quit");
+    printf ("\e[20;49H%s", "    Press 'r' to retry");
+    printf ("\e[21;49H%s", "          'q' to quit");
 }
 
 //OVER
@@ -421,7 +428,6 @@ int main (int argc, char **argv) {
     int score = 0;
     int tile[16];
     int tile_bak[16];
-    //int *tile_p[16];
 
     printf ("\e[s");            //store cursor position
     printf ("\e[?1049h");       //store window in buffer
