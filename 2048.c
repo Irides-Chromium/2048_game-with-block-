@@ -40,22 +40,18 @@ void print_border () {
     int c, r;
     char horizontal[44] = "-------------------------------------------";
     //Print horizontally
-    printf ("\e[6;1H%s", horizontal);
-    printf ("\e[12;1H%s", horizontal);
-    printf ("\e[18;1H%s", horizontal);
+    for (r=1;r<4;r++)
+        printf ("\e[%d;%dH%s", r * 6, 1, horizontal);
 
     //Print vertically
-    for (c=1;c<5;c++) {
-        for (r=1;r<24;r++) {
-            printf ("\e[%d;%dH|", r, 11*c);
-        }
-    }
+    for (c=1;c<5;c++)
+        for (r=1;r<24;r++)
+            printf ("\e[%d;%dH|", r, 11 * c);
+
     //Print dot
-    for (c=1;c<5;c++) {
-        for (r=1;r<4;r++) {
-            printf ("\e[%d;%dH%c", r*6, c*11, '+');
-        }
-    }
+    for (c=1;c<5;c++)
+        for (r=1;r<4;r++)
+            printf ("\e[%d;%dH%c", r * 6, c * 11, '+');
 }
 
 //PRINT_TILE
@@ -162,14 +158,12 @@ char get_key () {
     signal = getchar ();
     if (0x1b == signal) {
         escape = true;
-        if (0x5b == getchar ()) {
+        if (0x5b == getchar ())
             signal = getchar ();
-        }
-    } else {
+    } else
         escape = false;
-    }
 
-    if (escape) {
+    if (escape)
         switch (signal) {
             case 'A': key = 'U'; break;
             case 'B': key = 'D'; break;
@@ -177,7 +171,7 @@ char get_key () {
             case 'D': key = 'L'; break;
             default:   key = 'x'; break;
         }
-    } else {
+    else
         switch (signal) {
             case 'w': case 'W': key = 'U'; break;
             case 's': case 'S': key = 'D'; break;
@@ -189,7 +183,6 @@ char get_key () {
             case 'h': case 'H': key = 'h'; break;
             default:            key = 'x'; break;
         }
-    }
     return key;
 }
 
@@ -269,9 +262,8 @@ int move_tile (int tile[16], char direction) {
             for (j=0;j<=5;j++) {
                 if (j!=4) {
                     for (i=0;i<=14;i++) {
-                        if (i == 3 || i == 7 || i == 11) {
+                        if (i == 3 || i == 7 || i == 11)
                             continue;
-                        }
                         if (tile[i] == 0) {
                             tile[i] = tile[i+1];
                             tile[i+1] = 0;
@@ -279,9 +271,8 @@ int move_tile (int tile[16], char direction) {
                     }
                 } else {
                     for (i=0;i<=14;i++) {
-                        if (i == 3 || i == 7 || i == 11) {
+                        if (i == 3 || i == 7 || i == 11)
                             continue;
-                        }
                         if (tile[i] == tile[i+1]) {
                             tile[i] = 2 * tile[i];
                             tile[i+1] = 0;
@@ -332,57 +323,57 @@ void print_status (int score) {
 void print_info (int status) {
     switch (status) {
         case 0: //normal
-            printf ("\e[3;49H%s", "Use your arrow key to play      ");
-            printf ("\e[4;49H%s", "                                ");
-            printf ("\e[5;49H%s", "         _____                  ");
-            printf ("\e[6;49H%s", "        |     |                 ");
-            printf ("\e[7;49H%s", "        |  ^  |                 ");
-            printf ("\e[8;49H%s", "        |  |  |                 ");
-            printf ("\e[9;49H%s", "  -------------------           ");
-            printf("\e[10;49H%s", "  |     |     |     |           ");
-            printf("\e[11;49H%s", "  |  <- |  |  | ->  |           ");
-            printf("\e[12;49H%s", "  |     |  v  |     |           ");
-            printf("\e[13;49H%s", "  -------------------           ");
-            printf("\e[14;49H%s", "  Or W, S, A, D instead         ");
+            printf ("\e[3;45H%s", "    Use your arrow key to play      ");
+            printf ("\e[4;45H%s", "                                    ");
+            printf ("\e[5;45H%s", "               _____                ");
+            printf ("\e[6;45H%s", "              |     |               ");
+            printf ("\e[7;45H%s", "              |  ^  |               ");
+            printf ("\e[8;45H%s", "              |  |  |               ");
+            printf ("\e[9;45H%s", "        -------------------         ");
+            printf("\e[10;45H%s", "        |     |     |     |         ");
+            printf("\e[11;45H%s", "        |  <- |  |  | ->  |         ");
+            printf("\e[12;45H%s", "        |     |  v  |     |         ");
+            printf("\e[13;45H%s", "        -------------------         ");
+            printf("\e[14;45H%s", "       Or W, S, A, D instead        ");
             break;
         case 1: //win
-            printf ("\e[3;49H%s", "                                ");
-            printf ("\e[4;49H%s", "                                ");
-            printf ("\e[5;49H%s", "                                ");
-            printf ("\e[6;49H%s", "                                ");
-            printf ("\e[7;49H%s", "                                ");
-            printf ("\e[8;49H%s", "                                ");
-            printf ("\e[9;49H%s", "                                ");
-            printf("\e[10;49H%s", "                                ");
-            printf("\e[11;49H%s", "                                ");
+            printf ("\e[3;45H%s", "                                    ");
+            printf ("\e[4;45H%s", "                                    ");
+            printf ("\e[5;45H%s", "                                    ");
+            printf ("\e[6;45H%s", "                                    ");
+            printf ("\e[7;45H%s", "                                    ");
+            printf ("\e[8;45H%s", "                                    ");
+            printf ("\e[9;45H%s", "                                    ");
+            printf("\e[10;45H%s", "                                    ");
+            printf("\e[11;45H%s", "                                    ");
             printf("\e[34m");
-            printf("\e[12;49H%s", "           HURRAY!!!            ");
+            printf("\e[12;45H%s", "              HURRAY!!!             ");
             printf("\e[1;35m");
-            printf("\e[13;49H%s", "      You reached 2048!!        ");
+            printf("\e[13;45H%s", "         You reached 2048!!         ");
             printf("\e[0m");
-            printf("\e[14;51H%s", "       Move to continue         ");
+            printf("\e[14;45H%s", "          Move to continue          ");
             break;
         case 2: //lose
-            printf ("\e[3;49H%s", "                                ");
-            printf ("\e[4;49H%s", "                                ");
-            printf ("\e[5;49H%s", "                                ");
-            printf ("\e[6;49H%s", "                                ");
-            printf ("\e[7;49H%s", "                                ");
-            printf ("\e[8;49H%s", "                                ");
-            printf ("\e[9;49H%s", "                                ");
-            printf("\e[10;49H%s", "                                ");
-            printf("\e[11;49H%s", "                                ");
-            printf("\e[12;49H%s", "                                ");
+            printf ("\e[3;45H%s", "                                    ");
+            printf ("\e[4;45H%s", "                                    ");
+            printf ("\e[5;45H%s", "                                    ");
+            printf ("\e[6;45H%s", "                                    ");
+            printf ("\e[7;45H%s", "                                    ");
+            printf ("\e[8;45H%s", "                                    ");
+            printf ("\e[9;45H%s", "                                    ");
+            printf("\e[10;45H%s", "                                    ");
+            printf("\e[11;45H%s", "                                    ");
+            printf("\e[12;45H%s", "                                    ");
             printf("\e[1;31m");
-            printf("\e[13;49H%s", "            OH NO!!             ");
-            printf("\e[0m");
-            printf("\e[14;49H%s", "          You lose!!!           ");
+            printf("\e[13;45H%s", "               OH NO!!              ");
+            printf("\e[0m");                                  
+            printf("\e[14;45H%s", "             You lose!!!            ");
             break;
         default:
             break;
     }
-    printf ("\e[20;49H%s", "    Press 'r' to retry");
-    printf ("\e[21;49H%s", "          'q' to quit");
+    printf ("\e[20;45H%s", "        Press 'r' to retry");
+    printf ("\e[21;45H%s", "              'q' to quit");
 }
 
 //OVER
@@ -390,30 +381,24 @@ bool check_end (int tile[16]) {
     int i;
     int tile_bak[16];
     bool changed = false;
-    for (i=0;i<16;i++) {
-        if (tile[i] == 0) {
+    for (i=0;i<16;i++)
+        if (tile[i] == 0)
             return false;
-        }
-    }
 
-    for (i=0;i<16;i++) {
+    for (i=0;i<16;i++)
         tile_bak[i] = tile[i];
-    }
 
     move_tile (tile, 'U');
     move_tile (tile, 'D');
     move_tile (tile, 'R');
     move_tile (tile, 'L');
-    for (i=0;i<16;i++) {
-        if (tile_bak[i] != tile[i]) {
+    for (i=0;i<16;i++)
+        if (tile_bak[i] != tile[i])
             changed = true;
-        }
-    }
 
     if (changed) {
-        for (i=0;i<16;i++) {
+        for (i=0;i<16;i++)
             tile[i] = tile_bak[i];
-        }
         return false;
     }
     return true;
@@ -436,36 +421,24 @@ int main (int argc, char **argv) {
     struct termios saved_state = set_non_canonical ();
 start:
     //tile initialization
-    for (i=0;i<16;i++) {
+    for (i=0;i<16;i++)
         tile[i] = 0;
-    }
-
-    //for (i=0;i<16;i++) {
-    //    tile_p[i] = &tile[i];
-    //}
 
     place_tile (tile);
     place_tile (tile);
 
-    for (i=0;i<16;i++) {
+    for (i=0;i<16;i++)
         print_tile (tile[i], i);
-    }
 
     score = 0;
     print_info (0);
     print_status (score);
     //main loop
-    for (turn=1;;turn++) {
+    for (turn=1;!check_end (tile);turn++) {
 
         //backup
-        for (i=0;i<16;i++) {
+        for (i=0;i<16;i++)
             tile_bak[i] = tile[i];
-        }
-
-        //check end
-        if (check_end (tile)) {
-            goto lose;
-        }
 
         //check 2048
         if (!reached) {
@@ -475,9 +448,8 @@ start:
                     reached = true;
                 }
             }
-        } else {
+        } else
             print_info (0);
-        }
 
         //Get key
         key = get_key ();
@@ -492,31 +464,26 @@ start:
                 goto start;
                 break;
             case 'h':
-                //show_help ();
                 break;
             default:
                 break;
         }
 
         changed = false;
-        for (i=0;i<16;i++) {
-            if (tile[i] != tile_bak[i]) {
+        for (i=0;i<16;i++)
+            if (tile[i] != tile_bak[i])
                 changed = true;
-            }
-        }
 
-        if (changed) {
+        if (changed)
             place_tile (tile);
-        }
 
-        for (i=0;i<16;i++) {
+        for (i=0;i<16;i++)
             print_tile (tile[i], i);
-        }
 
         print_status (score);
     }
 
-lose:
+//lose:
     print_info (2);
     while (true) {
         switch (get_key ()) {

@@ -20,22 +20,19 @@ void print_border () {
     int r, c;
     char horizontal[44] = "-------------------------------------------";
     //Print horizontally
-    mvprintw (5, 0, horizontal);
-    mvprintw (11, 0, horizontal);
-    mvprintw (17, 0, horizontal);
+    for (r=1;r<4;r++)
+        mvprintw (r * 6 - 1, 0, horizontal);
 
     //Print vertically
-    for (c=1;c<5;c++) {
-        for (r=1;r<24;r++) {
-            mvprintw (r-1, 11*c-1, "|");
-        }
-    }
+    for (c=1;c<5;c++)
+        for (r=1;r<24;r++)
+            mvprintw (r - 1, 11 * c - 1, "|");
+
     //Print dot
-    for (c=1;c<5;c++) {
-        for (r=1;r<4;r++) {
-            mvprintw (r*6-1, 11*c-1, "+");
-        }
-    }
+    for (c=1;c<5;c++)
+        for (r=1;r<4;r++)
+            mvprintw (r * 6 - 1, 11 * c - 1, "+");
+
     refresh ();
 }
 
@@ -170,14 +167,12 @@ char get_key () {
     signal = getch ();
     if (0x1b == signal) {
         escape = true;
-        if (0x5b == getch ()) {
+        if (0x5b == getch ())
             signal = getch ();
-        }
-    } else {
+    } else
         escape = false;
-    }
 
-    if (escape) {
+    if (escape)
         switch (signal) {
             case 'A':
                 key = 'U';
@@ -195,7 +190,7 @@ char get_key () {
                 key = 'x';
                 break;
         }
-    } else {
+    else
         switch (signal) {
             case 'w': case 'W': key = 'U'; break;
             case 's': case 'S': key = 'D'; break;
@@ -207,7 +202,7 @@ char get_key () {
             case 'h': case 'H': key = 'h'; break;
             default:            key = 'x'; break;
         }
-    }
+
     return key;
 }
 
@@ -323,12 +318,11 @@ void place_tile (int tile[16]) {
     int empty_num=0;
 
     srandom (time (NULL));
-    for (i=0;i<16;i++) {
+    for (i=0;i<16;i++)
         if (0 == tile[i]) {
             empty_tile[empty_num] = i;
             ++empty_num;
         }
-    }
 
     if (empty_num > 0) {
         tile_num = random () % 10 ? 2 : 4;
@@ -355,49 +349,49 @@ void print_status (int score) {
 void print_info (int status) {
     switch (status) {
         case 0: //normal
-            mvprintw (3, 49, "%s", "Use your arrow key to play      ");
-            mvprintw (4, 49, "%s", "                                ");
-            mvprintw (5, 49, "%s", "         _____                  ");
-            mvprintw (6, 49, "%s", "        |     |                 ");
-            mvprintw (7, 49, "%s", "        |  ^  |                 ");
-            mvprintw (8, 49, "%s", "        |  |  |                 ");
-            mvprintw (9, 49, "%s", "  -------------------           ");
-            mvprintw(10, 49, "%s", "  |     |     |     |           ");
-            mvprintw(11, 49, "%s", "  |  <- |  |  | ->  |           ");
-            mvprintw(12, 49, "%s", "  |     |  v  |     |           ");
-            mvprintw(13, 49, "%s", "  -------------------           ");
-            mvprintw(14, 49, "%s", "  Or W, S, A, D instead         ");
-            break; 
+            mvprintw (3, 45, "%s", "    Use your arrow key to play     ");
+            mvprintw (4, 45, "%s", "                                   ");
+            mvprintw (5, 45, "%s", "             _____                 ");
+            mvprintw (6, 45, "%s", "            |     |                ");
+            mvprintw (7, 45, "%s", "            |  ^  |                ");
+            mvprintw (8, 45, "%s", "            |  |  |                ");
+            mvprintw (9, 45, "%s", "      -------------------          ");
+            mvprintw(10, 45, "%s", "      |     |     |     |          ");
+            mvprintw(11, 45, "%s", "      |  <- |  |  | ->  |          ");
+            mvprintw(12, 45, "%s", "      |     |  v  |     |          ");
+            mvprintw(13, 45, "%s", "      -------------------          ");
+            mvprintw(14, 45, "%s", "      Or W, S, A, D instead        ");
+            break;
         case 1: //win
-            mvprintw (3, 49, "%s", "                                ");
-            mvprintw (4, 49, "%s", "                                ");
-            mvprintw (5, 49, "%s", "                                ");
-            mvprintw (6, 49, "%s", "                                ");
-            mvprintw (7, 49, "%s", "                                ");
-            mvprintw (8, 49, "%s", "                                ");
-            mvprintw (9, 49, "%s", "                                ");
-            mvprintw(10, 49, "%s", "                                ");
-            mvprintw(11, 49, "%s", "                                ");
-            mvprintw(12, 49, "%s", "                                ");
-            mvprintw(13, 49, "%s", "           HURRAY!!!            ");
-            mvprintw(14, 49, "%s", "      You reached 2048!!        ");
-            mvprintw(15, 49, "%s", "       Move to continue         ");
-            break;                                                  
-        case 2: //lose              
-            mvprintw (3, 49, "%s", "                                ");
-            mvprintw (4, 49, "%s", "                                ");
-            mvprintw (5, 49, "%s", "                                ");
-            mvprintw (6, 49, "%s", "                                ");
-            mvprintw (7, 49, "%s", "                                ");
-            mvprintw (8, 49, "%s", "                                ");
-            mvprintw (9, 49, "%s", "                                ");
-            mvprintw(10, 49, "%s", "                                ");
-            mvprintw(11, 49, "%s", "                                ");
-            mvprintw(12, 49, "%s", "                                ");
-            mvprintw(13, 49, "%s", "            OH NO!!             ");
-            mvprintw(14, 49, "%s", "          You lose!!!           ");
-            break;                                                  
-        default:                    
+            mvprintw (3, 45, "%s", "                                   ");
+            mvprintw (4, 45, "%s", "                                   ");
+            mvprintw (5, 45, "%s", "                                   ");
+            mvprintw (6, 45, "%s", "                                   ");
+            mvprintw (7, 45, "%s", "                                   ");
+            mvprintw (8, 45, "%s", "                                   ");
+            mvprintw (9, 45, "%s", "                                   ");
+            mvprintw(10, 45, "%s", "                                   ");
+            mvprintw(11, 45, "%s", "                                   ");
+            mvprintw(12, 45, "%s", "                                   ");
+            mvprintw(13, 45, "%s", "               HURRAY!!!           ");
+            mvprintw(14, 45, "%s", "          You reached 2048!!       ");
+            mvprintw(15, 45, "%s", "           Move to continue        ");
+            break;
+        case 2: //lose
+            mvprintw (3, 45, "%s", "                                   ");
+            mvprintw (4, 45, "%s", "                                   ");
+            mvprintw (5, 45, "%s", "                                   ");
+            mvprintw (6, 45, "%s", "                                   ");
+            mvprintw (7, 45, "%s", "                                   ");
+            mvprintw (8, 45, "%s", "                                   ");
+            mvprintw (9, 45, "%s", "                                   ");
+            mvprintw(10, 45, "%s", "                                   ");
+            mvprintw(11, 45, "%s", "                                   ");
+            mvprintw(12, 45, "%s", "                                   ");
+            mvprintw(13, 45, "%s", "                OH NO!!            ");
+            mvprintw(14, 45, "%s", "              You lose!!!          ");
+            break;
+        default:
             break;
     }
     mvprintw (20, 49, "%s", "    Press 'r' to retry");
@@ -410,30 +404,24 @@ bool check_end (int tile[16]) {
     int i;
     int tile_bak[16];
     bool changed = false;
-    for (i=0;i<16;i++) {
-        if (tile[i] == 0) {
+    for (i=0;i<16;i++)
+        if (tile[i] == 0)
             return false;
-        }
-    }
 
-    for (i=0;i<16;i++) {
+    for (i=0;i<16;i++)
         tile_bak[i] = tile[i];
-    }
 
     move_tile (tile, 'U');
     move_tile (tile, 'D');
     move_tile (tile, 'R');
     move_tile (tile, 'L');
-    for (i=0;i<16;i++) {
-        if (tile_bak[i] != tile[i]) {
+    for (i=0;i<16;i++)
+        if (tile_bak[i] != tile[i])
             changed = true;
-        }
-    }
 
     if (changed) {
-        for (i=0;i<16;i++) {
+        for (i=0;i<16;i++)
             tile[i] = tile_bak[i];
-        }
         return false;
     }
     return true;
@@ -460,32 +448,24 @@ int main (int argc, char **argv) {
     print_border ();
 start:
     //tile initialization
-    for (i=0;i<16;i++) {
+    for (i=0;i<16;i++)
         tile[i] = 0;
-    }
 
     place_tile (tile);
     place_tile (tile);
 
-    for (i=0;i<16;i++) {
+    for (i=0;i<16;i++)
         print_tile (tile[i], i);
-    }
 
     score = 0;
     print_info (0);
     print_status (score);
     //main loop
-    for (turn=1;;turn++) {
+    for (turn=1;!check_end (tile);turn++) {
 
         //backup
-        for (i=0;i<16;i++) {
+        for (i=0;i<16;i++)
             tile_bak[i] = tile[i];
-        }
-
-        //check end
-        if (check_end (tile)) {
-            goto lose;
-        }
 
         //check 2048
         if (!reached) {
@@ -495,9 +475,8 @@ start:
                     reached = true;
                 }
             }
-        } else {
+        } else
             print_info (0);
-        }
 
         //Get key
         key = get_key ();
@@ -505,47 +484,32 @@ start:
             case 'U': case 'D': case 'R': case 'L':
                 score += move_tile (tile, key);
                 break;
-            case 'q':
-                goto end;
-                break;
-            case 'r':
-                goto start;
-                break;
-            case 'h':
-                //show_help ();
-                break;
-            default:
-                break;
+            case 'q': goto end; break;
+            case 'r': goto start; break;
+            case 'h': break;
+            default: break;
         }
 
         changed = false;
-        for (i=0;i<16;i++) {
-            if (tile[i] != tile_bak[i]) {
+        for (i=0;i<16;i++)
+            if (tile[i] != tile_bak[i])
                 changed = true;
-            }
-        }
 
-        if (changed) {
+        if (changed)
             place_tile (tile);
-        }
 
-        for (i=0;i<16;i++) {
+        for (i=0;i<16;i++)
             print_tile (tile[i], i);
-        }
 
         print_status (score);
     }
 
-lose:
     print_info (2);
     while (true) {
         switch (get_key ()) {
-            case 'q':
-                goto end;
-            case 'r':
-                goto start;
-            default:
-                continue;
+            case 'q': goto end;
+            case 'r': goto start;
+            default:  continue;
         }
     }
 
