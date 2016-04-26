@@ -19,7 +19,6 @@ void print_tile (int num, int tile_num);
 void print_info (int status);
 void set_canonical (struct termios old);
 
-//CANONICAL
 struct termios set_non_canonical () {
     struct termios old_info;
     tcgetattr(0, &old_info);
@@ -35,7 +34,6 @@ void set_canonical (struct termios old) {
     tcsetattr(0, TCSANOW, &old);
 }
 
-//BORDER
 void print_border () {
     int c, r;
     char horizontal[44] = "-------------------------------------------";
@@ -54,7 +52,6 @@ void print_border () {
             printf ("\e[%d;%dH%c", r * 6, c * 11, '+');
 }
 
-//PRINT_TILE
 void print_tile (int num, int tile_num) {
     char color[20];
     char before[8];
@@ -150,7 +147,6 @@ void print_tile (int num, int tile_num) {
     }
 }
 
-//GET_KEY
 char get_key () {
     char signal;
     char key;
@@ -186,7 +182,6 @@ char get_key () {
     return key;
 }
 
-//MOVE_TILE
 int move_tile (int tile[16], char direction) {
     int i, j;
     int delta_score = 0;
@@ -286,7 +281,6 @@ int move_tile (int tile[16], char direction) {
     return delta_score;
 }
 
-//PLACE_TILE
 void place_tile (int tile[16]) {
     int i;
     int empty_loc;
@@ -311,7 +305,6 @@ void place_tile (int tile[16]) {
     }
 }
 
-//STATUS
 void print_status (int score) {
     printf ("\e[24;1H");
     printf ("\e[1;7m");
@@ -376,7 +369,6 @@ void print_info (int status) {
     printf ("\e[21;45H%s", "              'q' to quit");
 }
 
-//OVER
 bool check_end (int tile[16]) {
     int i;
     int tile_bak[16];
@@ -483,7 +475,6 @@ start:
         print_status (score);
     }
 
-//lose:
     print_info (2);
     while (true) {
         switch (get_key ()) {
