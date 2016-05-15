@@ -6,17 +6,21 @@
 #include <stdbool.h>
 #include <time.h>
 
-struct termios set_non_canonical ();
-char get_key ();
 bool check_end (int tile[16]);
+bool check_if_session ();
+char get_key ();
 int main (int argc, char **argv);
 int move_tile (int tile[16], char direction);
+struct termios set_non_canonical ();
+void load_session (int cur_tile[16], int cur_score, char *session);
+void save_session (int cur_tile[16], int cur_score);
 void map_key (char key);
 void place_tile (int tile[16]);
 void print_border ();
+void print_info (int status);
+void print_load_session ();
 void print_status (int score);
 void print_tile (int num, int tile_num);
-void print_info (int status);
 void set_canonical (struct termios old);
 
 struct termios set_non_canonical () {
